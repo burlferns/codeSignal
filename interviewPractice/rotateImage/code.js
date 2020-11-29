@@ -62,3 +62,50 @@ function rotateImage(a) {
 
 
 */
+
+
+function rotateImage(a) {
+    const len = a.length;
+    let e1, e1row, e1col;
+    let e2, e2row, e2col;
+    let e3, e3row, e3col;
+    let e4, e4row, e4col;
+
+    let rowMax;
+    if(len%2>0) {
+        rowMax = (len-1)/2 - 1;
+    }
+    else {
+        rowMax = len/2 - 1;
+    }
+
+    for(let row=0; row<=rowMax; row++) {
+        let colMin = row;
+        let currentSquareLength = len - row*2;
+        let colMax = colMin + currentSquareLength - 2;
+        for(let col=colMin; col<=colMax; col++) {
+            e1row = row;
+            e1col = col;
+            e1 = a[e1row][e1col];
+
+            e2row = e1col;
+            e2col = len-1-e1row;
+            e2 = a[e2row][e2col];
+
+            e3row = e2col;
+            e3col = len-1-e2row;
+            e3 = a[e3row][e3col];
+
+            e4row = e3col;
+            e4col = len-1-e3row;
+            e4 = a[e4row][e4col];
+
+            a[e1row][e1col] = e4;
+            a[e2row][e2col] = e1;
+            a[e3row][e3col] = e2;
+            a[e4row][e4col] = e3;
+        }
+    }
+
+    return a;
+}

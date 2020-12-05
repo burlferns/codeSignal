@@ -1,0 +1,78 @@
+function swapLexOrder(str, pairs) {
+    if(pairs.length===0) {
+        return str
+    }
+    
+    
+    
+    function doSwap(index1, index2, stringIn) {
+        if(index1===index2) {
+            return stringIn;
+        }
+                
+        let indA = index1;
+        let indB = index2;      
+        if(index1>index2) {
+            indA = index2;
+            indB = index1;
+        }
+        
+        //Have to subtract as the index as specified in pairs array
+        //is 1-based
+        indA--;
+        indB--;
+        
+        
+        let part1 = ""
+        if(indA!==0) {
+            part1 = stringIn.substring(0,indA);
+        }
+        
+        let swap1 = stringIn.charAt(indB);
+        
+        let part2 = stringIn.substring(indA+1,indB);
+        
+        let swap2 = stringIn.charAt(indA);
+        
+        let part3 = ""
+        if(indB!==stringIn.length-1) {
+            part3 = stringIn.substring(indB+1);
+        }
+        
+        let stringOut = part1 + swap1 + part2 + swap2 + part3;
+        
+        return stringOut;
+    }
+    
+    // console.log("doSwap(2,5,'abcdefgh') =",doSwap(2,5,'abcdefgh'));
+    // console.log("doSwap(0,5,'abcdefgh') =",doSwap(0,5,'abcdefgh'));
+    // console.log("doSwap(3,3,'abcdefgh') =",doSwap(3,3,'abcdefgh'));
+    // console.log("doSwap(5,2,'abcdefgh') =",doSwap(5,2,'abcdefgh'));
+    // console.log("doSwap(2,7,'abcdefgh') =",doSwap(2,7,'abcdefgh'));
+    
+    let seenSet = new Set();
+    let lexMax = str;
+    let currentString = str;
+    
+    // console.log('initial lexMax =',lexMax);
+    // console.log('initial currentString =',currentString);
+    // console.log('******************')
+    
+    while(!seenSet.has(currentString)) {
+        seenSet.add(currentString);
+        let newString = currentString;
+        for(let i=0; i<pairs.length; i++) {
+            newString = doSwap(pairs[i][0],pairs[i][1],newString);
+        }
+        if(newString>lexMax) {
+            lexMax = newString;
+        }       
+        currentString = newString;
+        
+        // console.log('lexMax =',lexMax);
+        // console.log('currentString =',currentString);
+        // console.log('******************')
+    }
+
+    return lexMax;
+}

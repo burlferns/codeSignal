@@ -1,0 +1,122 @@
+function swapLexOrder(str, pairs) {
+    if(pairs.length===0) {
+        return str
+    }
+    
+    //In this function index is 0-based
+    function modCharInString(str,char,index) {       
+        let front = "";
+        if(index!==0) {
+            front = str.substring(0,index);
+        }
+        let back = "";
+        if(index!==str.length-1) {
+            back = str.substring(index+1);
+        }
+        return front + char + back;
+    }
+    
+    // console.log("modCharInString('abcdefgh','z',3) =",modCharInString('abcdefgh','z',3));
+    // console.log("modCharInString('abcdefgh','z',0) =",modCharInString('abcdefgh','z',0));
+    // console.log("modCharInString('abcdefgh','z',7) =",modCharInString('abcdefgh','z',7));
+    
+    let mapIndxToLbl = new Map();
+    let mapLblToAry = new Map();
+    let currLbl = 0;
+    
+    let pairsLength = pairs.length;
+    for(let i=0; i<pairsLength; i++) {
+        let pair = pairs[i];
+        if(!mapIndxToLbl.has(pair[0]) && !mapIndxToLbl.has(pair[1])) {
+            mapLblToAry.set(currLbl,pair);
+            mapIndxToLbl.set(pair[0],currLbl);
+            mapIndxToLbl.set(pair[1],currLbl);
+            currLbl++;
+        } else if(!mapIndxToLbl.has(pair[0]) && mapIndxToLbl.has(pair[1])) {
+            let oldLbl = mapIndxToLbl.get(pair[1]);
+            let currAry = mapLblToAry.get(oldLbl);
+            mapLblToAry.delete(oldLbl);
+            currAry.push(pair[0]);
+            mapLblToAry.set(currLbl,currAry)
+            currAry.forEach((key)=>{
+                mapIndxToLbl.set(key,currLbl);
+            });
+            currLbl++;
+        } else if(mapIndxToLbl.has(pair[0]) && !mapIndxToLbl.has(pair[1])) {
+            let oldLbl = mapIndxToLbl.get(pair[0]);
+            let currAry = mapLblToAry.get(oldLbl);
+            mapLblToAry.delete(oldLbl);
+            currAry.push(pair[1]);
+            mapLblToAry.set(currLbl,currAry)
+            currAry.forEach((key)=>{
+                mapIndxToLbl.set(key,currLbl);
+            });
+            currLbl++;
+        } else {
+            let oldLbl0 = mapIndxToLbl.get(pair[0]);
+            let currAry0 = mapLblToAry.get(oldLbl0);
+            let oldLbl1 = mapIndxToLbl.get(pair[1]);
+            let currAry1 = mapLblToAry.get(oldLbl1);
+            mapLblToAry.delete(oldLbl0);
+            mapLblToAry.delete(oldLbl1);
+            let currAry = currAry0.concat(currAry1);
+            
+            mapLblToAry.set(currLbl,currAry)
+            currAry.forEach((key)=>{
+                mapIndxToLbl.set(key,currLbl);
+            });
+            currLbl++;
+        }   
+    }
+    
+    console.log('mapLblToAry =',mapLblToAry) 
+    
+    let grpIndxAry = [];
+    let grpLtrAry = [];
+    for (let value of mapLblToAry.values()) {
+        grpIndxAry.push(value);
+        let ltrAry = [];
+        value.forEach((val)=>{
+            ltrAry.push(str.charAt(val-1))            
+        });
+        grpLtrAry.push(ltrAry);
+    }
+    
+    console.log('b4sort grpIndxAry =',grpIndxAry);
+    console.log('b4sort grpLtrAry =',grpLtrAry);
+    
+    grpIndxAry.forEach(elem=>{
+        elem.sort((a,b)=>(a-b));
+    });
+    
+    grpLtrAry.forEach(elem=>{
+        elem.sort((a,b)=>{
+            if(a<b) {
+                return 1;
+            } 
+            if(a>b) {
+                return -1;
+            }
+            if(a===b) {
+                return 0;
+            }
+        });
+    });
+    
+    console.log('aftsort grpIndxAry =',grpIndxAry);
+    console.log('aftsort grpLtrAry =',grpLtrAry);
+    
+    let outStr = str;
+    for(let i=0; i<grpIndxAry.length; i++) {
+        let indxAry = grpIndxAry[i];
+        let ltrAry = grpLtrAry[i];
+        for(let j=0; j<indxAry.length; j++) {
+            // modCharInString('abcdefgh','z',3)
+            outStr = modCharInString(outStr,ltrAry[j],indxAry[j]-1);
+        }
+    }
+    
+    
+    return outStr;
+    
+}

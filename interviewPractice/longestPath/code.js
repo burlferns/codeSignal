@@ -97,7 +97,8 @@ function longestPath(fileSystem) {
     const queue = fileSystem.split('\f');
 
     //This array holds the current path for the current item
-    //being processed from the queue.
+    //being processed from the queue. Note that this is effectively a stack
+    //and currLvl defined below is a pointer to the top of the stack
     const currPath = [];
 
     //This variable holds the sum of the string length of all the
@@ -108,6 +109,7 @@ function longestPath(fileSystem) {
     //This variable hold the level of the last item of the current path
     //When there is nothing in currPath, then
     //currLvl is -1
+    //See the comment on currPath above for info on currLvl
     let currLvl = -1;
 
     //This holds the longest abolute path
